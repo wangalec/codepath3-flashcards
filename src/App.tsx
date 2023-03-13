@@ -4,14 +4,9 @@ import FlashCard from './components/FlashCard';
 
 const App = () => {
 
-  const[currIndex, setCurrIndex] = useState(0);
-  const newIndex = () => {
-    setCurrIndex(Math.floor(Math.random() * 10))
-  }
-
   const flashCards: {front: string, back: string}[] = [
-    { "front": "Monophonic", "back": "A single melody line/tune played by many people"},
-    { "front": "Polyphonic", "back": "Many melody lines/tunes, many rhythms played by many people"},
+    { "front": "Monophonic", "back": "A single melody line"},
+    { "front": "Polyphonic", "back": "Many melody lines"},
     { "front": "Rondo Form", "back": "Structure takes the form of A B A C A etc"},
     { "front": "Major", "back": "a key whose harmony is based on the major scale which sounds happy"},
     { "front": "Chromatic", "back": "motion by half steps; also describes harmony or melody that employs some of the sequential 12 pitches (semi-tones) in an octave - Chromatic notes are notes not in the key"},
@@ -22,6 +17,29 @@ const App = () => {
     { "front": "Cresendo", "back": "Getting louder"},
   ]
 
+  const[currIndex, setCurrIndex] = useState(0);
+  const[answer, setAnswer] = useState("");
+  const[isCorrect, setIsCorrect] = useState(false);
+
+  const nextIndex = () => {
+    if(currIndex < 9) setCurrIndex(currIndex + 1);
+    setIsCorrect(false);
+  }
+  const previousIndex = () => {
+    if(currIndex > 0) setCurrIndex(currIndex - 1);
+    setIsCorrect(false);
+  }
+  const handleAnswerChange = (event: any) => {
+    setAnswer(event.target.value);
+  }
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    if(flashCards[currIndex].back == answer) setIsCorrect(true);
+    setAnswer('');
+  }
+
+  
+
   return (
     <div className="App">
       <h1> Music Terms </h1>
@@ -31,7 +49,18 @@ const App = () => {
         front = {flashCards[currIndex].front}
         back = {flashCards[currIndex].back}
       />
-      <button onClick={newIndex}> Next </button>
+      <form onSubmit={handleSubmit}>
+        <input
+          value = {answer}
+          onChange = {handleAnswerChange}
+        />
+        <button> Check </button>
+        {isCorrect ? <h2> Correct! </h2> : <></>}
+      </form>
+      <div>
+        <button onClick={previousIndex}> Previous </button>
+        <button onClick={nextIndex}> Next </button>
+      </div>
     </div>
   )
 }
